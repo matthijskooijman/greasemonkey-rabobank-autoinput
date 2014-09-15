@@ -12,6 +12,7 @@
 // @grant               GM_listValues
 // @grant               GM_deleteValue
 // @grant               GM_addStyle
+// @grant               GM_registerMenuCommand
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js
 // ==/UserScript==
 
