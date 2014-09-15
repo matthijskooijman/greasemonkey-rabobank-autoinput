@@ -212,26 +212,11 @@
 	// Define event handling function for selecting an account; fills in the account details
 	function selectAccount(idx) {
 		var d = document;
-		d.getElementById('AuthIdv4').value = accountsArray[idx].number;
-		d.getElementById('AuthBpasNrv4').value = accountsArray[idx].cardNumber;
-		if (location.host === "bankieren.rabobank.nl" && (
-				location.pathname === "/klanten" ||
-				location.pathname === "/klanten/qslad.htm" ||
-				location.pathname === "/rib/rib.cgi" ||
-				location.pathname === "/ide/qslo.htm"
-			)) {
-			d.getElementById("AuthCdv4").focus();
-		} else if (location.host === "betalen.rabobank.nl") {
-			d.getElementById("SignCdv4").focus();
-		} else {
-			window.alert(
-				"Rabobank site location not recognised.\nShould be either:\n\t'bankieren.rabobank.nl/klanten'" +
-				"\nor\n\t'bankieren.rabobank.nl//klanten/qslad.htm'" +
-				"\nor\n\t'bankieren.rabobank.nl/rib/rib.cgi'" +
-				"\nor\n\t'bankieren.rabobank.nl/ide/qslo.htm'" +
-				"\nbut was\n\t'" + location.host + location.pathname +
-				"'\n. Will attempt to continue executing script anyways.");
-		}
+		$('#AuthIdv4').attr('value', accountsArray[idx].number);
+		$('#AuthBpasNrv4').attr('value', accountsArray[idx].cardNumber);
+		// Login pages have AuthCdv4, sign pages have SignCdv4.
+		// Focuse whatever one is available.
+		$('#AuthCdv4, #SignCdv4').focus();
 		$('#accounts input[type="radio"]')[idx].checked = true;
 	}
 
