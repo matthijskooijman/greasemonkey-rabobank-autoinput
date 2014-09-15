@@ -1,8 +1,7 @@
 // ==UserScript==
 // @name                Rabobank Internetbankieren auto-input
 // @namespace           FelixAkk
-// @description         Automatically input your bank account and card number using an easy selection box with
-//                      neat extra features. Works on any Rabobank login page and payment page (also iDeal).
+// @description         Quickly select from multiple bank acccounts in the Rabobank login and payment pages
 // @include             https://bankieren.rabobank.nl/klanten*
 // @include             https://bankieren.rabobank.nl/rib/*
 // @include             https://betalen.rabobank.nl/ide/qslo*
