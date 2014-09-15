@@ -93,22 +93,21 @@
 	'a.edit.exit {'+
 	'    background-image: url("http://www.famfamfam.com/lab/icons/silk/icons/page_white_put.png");'+
 	'}'+
-	'a.account_btn {'+
+	'a.account.add, a.account.delete {'+
 	'    background: no-repeat scroll 0 0 transparent;'+
 	'    display: inline-block;'+
 	'    height: 16px;'+
-	'    margin: 0 0 0 5px;'+
 	'    opacity: 0.3;'+
 	'    vertical-align: text-bottom;'+
 	'    width: 16px;'+
 	'}'+
-	'a.account_btn:hover {'+
+	'a.account.add:hover, a.account.delete:hover {'+
 	'    opacity: 1;'+
 	'}'+
-	'a.add_account {'+
+	'a.account.add {'+
 	'    background-image: url("http://www.famfamfam.com/lab/icons/silk/icons/add.png");'+
 	'}'+
-	'a.delete_account {'+
+	'a.account.delete {'+
 	'    background-image: url("http://www.famfamfam.com/lab/icons/silk/icons/delete.png");'+
 	'}';
 
@@ -119,28 +118,14 @@
 	'  <form>'+
 	'    <table id="accounts">'+
 	// Static table header
-	'      <tr>'+
-	'        <th colspan="2">Selecteer uw Rabobank rekening</th>'+
-	'        <th>Rekening nummer</th>'+
-	'        <th>Kaart nummer</th>'+
-	'      </tr>'+
-	// The DOM structure of a row containing the selectable accounts on display
-	'      <tr class="selectable-account">'+
-	'        <td><input type="radio"/></td>'+
-	'        <td><label>Account description</label></td>'+
-	'        <td><label>123456789</label></td>'+
-	'        <td><label>1234</label></td>'+
-	'      </tr>'+
-	// The DOM structure of a row for editing an account
-	'      <tr class="editable-account">'+
-	'        <td colspan="2"><input type="text" size="30" value="Account description"/></td>'+
-	'        <td><input type="text" maxlength="9" size="9" value="123456789"/></td>'+
-	'        <td>'+
-	'          <input type="text" maxlength="4" size="4" value="1234"/>'+
-	'          <a href="#" class="account_btn add_account"></a>'+
-	'          <a href="#" class="account_btn delete_account"></a>'+
-	'        </td>'+
-	'      </tr>'+
+	'      <thead>'+
+	'        <tr>'+
+	'          <th>Selecteer uw Rabobank rekening</th>'+
+	'          <th>Rekening nummer</th>'+
+	'          <th>Kaart nummer</th>'+
+	'        </tr>'+
+	'      </thead>'+
+	'      <tbody></tbody>'+
 	'    </table>'+
 	'  <form>'+
 	// The edit button
@@ -178,10 +163,6 @@
 		accountsArray = JSON.parse(accountsJSON);
 	}
 
-	// Utility index, to be used in loops
-	var idx;
-	var d = window.document;
-
 	// Utility function that takes a bank account number and returns it seperated by points like on the Rabobank cards
 	function numberFormat(account) {
 		var nr = String(account);
@@ -189,13 +170,47 @@
 	}
 
 	// Build accounts table contents (the rows), depending on whether we're editing (true) or selecting (false)
-	function constructTableContents(editing) {
-		return 44;
+	function constructTable() {
+		var t = $('#accounts tbody');
+		t.empty();
+		for (var idx = 0; idx < accountsArray.length; idx++) {
+			if (editing)
+				t.append(constructEditableRow(accountsArray[idx]));
+			else
+				t.append(constructSelectableRow(idx, accountsArray[idx]));
+		}
+		if (editing)
+			$('<tr><td colspan="4"><a href="#" class="account add"/></td></tr>').on('click', addAccount).appendTo(t);
 	}
 
+	function constructSelectableRow(idx, acc) {
+		return $('<tr class="selectable-account"/>').append(
+			$('<td/>').append(
+				$('<input type="radio" name="account" />'),
+				$('<label/>').text(acc.description)
+			),
+			$('<td/>').append($('<label/>').text(acc.number)),
+			$('<td/>').append($('<label/>').text(acc.cardNumber))
+		).on('click', function() { selectAccount(idx); });
+	}
+
+	function constructEditableRow(acc) {
+		return $('<tr class="editable-account"/>').append(
+			$('<td/>').append($('<input type="text" />').attr('value', acc.description)),
+			$('<td/>').append($('<input type="text" size="9" maxlength="9"/>').attr('value', acc.number)),
+			$('<td/>').append($('<input type="text" size="4" maxlength="4"/>').attr('value', acc.cardNumber)),
+			$('<td/>').append($('<a href="#" class="account delete"/>').on('click', deleteAccount))
+		);
+	}
+
+	function accountFromRow(row) {
+		var inputs = $('input', row);
+		return new Account(inputs[0].value, inputs[1].value, inputs[2].value);
+	}
 
 	// Define event handling function for selecting an account; fills in the account details
 	function selectAccount(idx) {
+		var d = document;
 		d.getElementById('AuthIdv4').value = accountsArray[idx].number;
 		d.getElementById('AuthBpasNrv4').value = accountsArray[idx].cardNumber;
 		if (location.host === "bankieren.rabobank.nl" && (
@@ -216,80 +231,30 @@
 				"\nbut was\n\t'" + location.host + location.pathname +
 				"'\n. Will attempt to continue executing script anyways.");
 		}
+		$('#accounts input[type="radio"]')[idx].checked = true;
 	}
 
 	// Define event handling function for deleting an account/row in the accounts table when editing accounts
-	function deleteAccount(accountIdx) {
-		var element;
-		// A little trickery to get this function to work as a event listener for HTML elements and also as a procedural
-		// function that automatically select the default when called without arguments.
-		if (arguments.length === 1)
-			element = d.getElementById('accounts').getElementsByTagName('tr')[accountIdx+1];
-		if (this.tagName)
-			element = this.parentNode.parentNode;
-
-		element.parentNode.removeChild(element);
+	function deleteAccount() {
+		$(this).closest('tr').remove();
 	}
 
 	// Define event handling function for inserting an account/row in the accounts table after a given index (when editing accounts)
 	function addAccount(accountIdx) {
-		var element;
-		// A little trickery to get this function to work as a event listener for HTML elements and also as a procedural
-		// function that automatically select the default when called without arguments.
-		if (arguments.length === 1)
-			element = d.getElementById('accounts').getElementsByTagName('tr')[accountIdx+1];
-		if (this.tagName)
-			element = this.parentNode.parentNode;
-
-		var newRow = element.cloneNode(true);
-		// Reset the opacity of the clone to idle, because it'll have the value sampled from the active button
-		newRow.getElementsByTagName('a')[1].style.opacity = op;
-		// Insert a duplicate after
-		element.parentNode.insertBefore(newRow, element.nextSibling);
-		// Re-register event listeners so the new row also listens
-		registerEventListeners(editing);
+		var row = constructEditableRow(new Account());
+		row.insertBefore($('#accounts tbody tr').last());
 	}
 
-	// Define event handling function for changing the style of the add/delete buttons
-	function buttonOver() {
-		this.style.opacity = 1;
-	}
-	function buttonOut() {
-		this.style.opacity = op;
-	}
-
-
-	// Define event handling function for editing the account (turns them into a form)
-	function editAccounts() {
-		// If we were editing get the stuff entered and save it
-		if (editing) {
-			var rows = d.getElementById('accounts').getElementsByTagName('tr');
-			accountsArray = []; // new array, clean slate
-			// Fill array
-			for (idx = 1; idx < rows.length; idx++) {
-				accountsArray.push(new Account(
-					rows[idx].getElementsByTagName('input')[0].value,
-					rows[idx].getElementsByTagName('input')[1].value,
-					rows[idx].getElementsByTagName('input')[2].value
-				));
-			}
-			// Save it all
-			GM_setValue('accountsJSON', JSON.stringify(accountsArray));
-			// Restore the edit button/link
-			d.getElementById('edit').style.backgroundImage = 'url("http://www.famfamfam.com/lab/icons/silk/icons/page_white_edit.png")';
-			d.getElementById('edit').innerHTML = "Rekeningen instellen...";
-
-		// Else if we weren't and are entering editing mode; adapt the GUI to display the save button/link
-		} else {
-			d.getElementById('edit').style.backgroundImage = 'url("http://www.famfamfam.com/lab/icons/silk/icons/page_white_put.png")';
-			d.getElementById('edit').innerHTML = "Veranderingen opslaan";
-		}
-		// We're done; flip editing mode
-		editing = !editing;
-		// Set the contents to the new mode
-		d.getElementById('accounts').innerHTML = constructTableContents(editing);
-		// Re-register event listeners
-		registerEventListeners(editing);
+	// Event handler for the save changes button
+	function saveChanges() {
+		accountsArray = []; // new array, clean slate
+		// Fill array
+		$('#accounts tbody tr').slice(0, -1).each(function(idx, row) {
+			accountsArray.push(accountFromRow(row));
+		});
+		// Save it all
+		GM_setValue('accountsJSON', JSON.stringify(accountsArray));
+		setEditMode(false);
 	}
 
 	// Function to add an menu item to the GreaseMonkey command item to select your account.
@@ -302,50 +267,32 @@
 		GM_registerMenuCommand(caption, handler);
 	}
 
-	function renderAccountsPanel(editing) {
-		$("a.edit.enter", selectionPanel).toggle(!editing);
-		$("a.edit.exit", selectionPanel).toggle(editing);
+	function setEditMode(value) {
+		// Update edit/save links
+		$("a.edit.enter", selectionPanel).toggle(!value);
+		$("a.edit.exit", selectionPanel).toggle(value);
+		// Remember new edit mode
+		editing = value;
+		// Reconstruct table
+		constructTable();
 	}
 
 	function initAccountsPanel() {
-		$("a.edit.enter", selectionPanel).on("click", function() { renderAccountsPanel(true)});
-		$("a.edit.exit", selectionPanel).on("click", function() { renderAccountsPanel(false)});
-
-		var rows;
-
-
-		// Register event listeners in account table
-		function registerEventListeners(editing) {
-			var rows;
-			if (!editing) {
-				for (idx = 0; idx < accountsArray.length; idx++) {
-					d.getElementById(idx).addEventListener('click', function() { selectAccount(this.id) }, false);
-				}
-			} else {
-				rows = d.getElementById('accounts').getElementsByTagName('tr');
-				for (idx = 1; idx < rows.length; idx++) {
-					rows[idx].getElementsByTagName('a')[0].addEventListener('mouseover', buttonOver, false);
-					rows[idx].getElementsByTagName('a')[0].addEventListener('mouseout',  buttonOut,  false);
-					rows[idx].getElementsByTagName('a')[1].addEventListener('mouseover', buttonOver, false);
-					rows[idx].getElementsByTagName('a')[1].addEventListener('mouseout',  buttonOut,  false);
-
-					rows[idx].getElementsByTagName('a')[0].addEventListener('click', deleteAccount, false);
-					rows[idx].getElementsByTagName('a')[1].addEventListener('click', addAccount,    false);
-				}
-			}
-		}
+		$("a.edit.enter", selectionPanel).on("click", function() { setEditMode(true)});
+		$("a.edit.exit", selectionPanel).on("click", function() { saveChanges()});
+		setEditMode(false);
 	}
 
 	function initialize() {
 		// Load the defined custom styles
 		GM_addStyle(stylesheet);
 
-		initAccountsPanel(editing);
-		// Insert the custom account selection panel
+		// Insert and fill the custom account selection panel
 		$("#brt_content-section").prepend(selectionPanel);
+		initAccountsPanel(editing);
 
 		if (GMMenu) {
-			for (idx = 0; idx < accountsArray.length; idx++) {
+			for (var idx = 0; idx < accountsArray.length; idx++) {
 				addGMMenuItem(idx);
 			}
 		}
@@ -359,15 +306,11 @@
 		// This basically just fires the event listener function without setting the it's this.id attribute.
 		if (autoFillDefault) {
 			// We have to wait a little while to avoid conflict with Rabobank's native JavaScript ran on DOM-ready
-			window.setTimeout(function() {
-				selectAccount(defaultAccount);
-				// The event handler doesn't check the radio button, so I'll do that here to give the user feedback
-				d.getElementById(defaultAccount).checked = true;
-			}, autoFillDelay);
+			window.setTimeout(function() { selectAccount(defaultAccount); }, autoFillDelay);
 		}
 	}
 	/**
-	/* Run only script is of use, i.e.;
+	/* Run only when script is of use, i.e.;
 	/* if we're on a Rabobank page where we have the kind of form we can input something usefull into.
 	 */
 	if(
