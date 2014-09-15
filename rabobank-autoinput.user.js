@@ -14,6 +14,9 @@
 // @grant               GM_addStyle
 // @grant               GM_registerMenuCommand
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js
+// @copyright           2014, Felix Akkermans
+// @license             The MIT license; http://opensource.org/licenses/MIT
+// @homepageURL         https://github.com/matthijskooijman/greasemonkey-rabobank-autoinput
 // ==/UserScript==
 
 /*jslint undef: true, vars: true, newcap: true, maxerr: 50, maxlen: 200, indent: 4 */
