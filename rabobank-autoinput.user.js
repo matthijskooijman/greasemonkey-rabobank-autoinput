@@ -215,7 +215,6 @@
 
 	// Define event handling function for selecting an account; fills in the account details
 	function selectAccount(idx) {
-		var d = document;
 		$('#AuthIdv4').attr('value', accountsArray[idx].number);
 		$('#AuthBpasNrv4').attr('value', accountsArray[idx].cardNumber);
 		// Login pages have AuthCdv4, sign pages have SignCdv4.
