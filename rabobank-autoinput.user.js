@@ -306,7 +306,7 @@
 	if(
 		$('#brt_form') !== null &&
 		$('#AuthIdv4') !== null &&
-		$('AuthBpasNrv4') !== null
+		$('#AuthBpasNrv4') !== null
 	) {
 		initialize();
 	}
