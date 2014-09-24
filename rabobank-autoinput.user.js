@@ -304,9 +304,9 @@
 	/* if we're on a Rabobank page where we have the kind of form we can input something usefull into.
 	 */
 	if(
-		$('#brt_form') !== null &&
-		$('#AuthIdv4') !== null &&
-		$('#AuthBpasNrv4') !== null
+		$('#brt_form').length != 0 &&
+		$('#AuthIdv4').length != 0 &&
+		$('#AuthBpasNrv4').length != 0
 	) {
 		initialize();
 	}
