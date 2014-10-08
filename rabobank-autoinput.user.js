@@ -277,10 +277,11 @@
 		GM_addStyle(stylesheet);
 
 		// Insert and fill the custom account selection panel
-		var container = $('#brt_content-section'); // Random reader
-		if (container.length == 0)
-			container = $('#loginform').parent().parent(); // Rabo Scanner
-		container.prepend(selectionPanel);
+		var elem = $('#icodeform').parent(); // Ideal payment page and Rabo Scanner login
+		if (elem.length == 0)
+			elem = $('#loginform').parent(); // Random reader login
+
+		elem.before(selectionPanel);
 		initAccountsPanel(editing);
 
 		if (GMMenu) {
@@ -306,7 +307,7 @@
 	/* if we're on a Rabobank page where we have the kind of form we can input something usefull into.
 	 */
 	if(
-		$('#brt_form, #loginform').length != 0 &&
+		$('#brt_form, #loginform, #icodeform').length != 0 &&
 		$('#AuthIdv4').length != 0 &&
 		$('#AuthBpasNrv4').length != 0
 	) {
