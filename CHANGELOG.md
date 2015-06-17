@@ -1,3 +1,6 @@
+Version 2.1.4 (2018-05-01)
+ - Update login url.
+
 Version 2.1.3 (2018-01-14)
  - Update to the new version of the login page. The ideal page seems to
    be unmodified until now.

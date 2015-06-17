@@ -12,7 +12,7 @@
 // @copyright           2014, Matthijs Kooijman (matthijs@stdin.nl)
 // @license             The MIT license; http://opensource.org/licenses/MIT
 // @homepageURL         https://github.com/matthijskooijman/greasemonkey-rabobank-autoinput
-// @version             2.1.3
+// @version             2.1.4
 // ==/UserScript==
 
 /*jslint undef: true, vars: true, newcap: true, maxerr: 50, maxlen: 200, indent: 4 */
