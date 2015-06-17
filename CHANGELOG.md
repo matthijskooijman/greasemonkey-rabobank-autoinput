@@ -1,3 +1,6 @@
+Version 2.1.2 (2015-06-17)
+ - Really support the Rabo Scanner (login tested, ideal not yet).
+
 Version 2.1.1 (2014-10-08)
  - Make ideal payment page work again after Rabobank made changes.
 
