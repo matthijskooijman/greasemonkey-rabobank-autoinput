@@ -196,7 +196,7 @@
 			),
 			$('<td/>').append($('<label/>').text(acc.number)),
 			$('<td/>').append($('<label/>').text(acc.cardNumber))
-		).on('click', function() { selectAccount(idx); });
+		).on('click', function() { selectAccount(idx, true); });
 	}
 
 	function constructEditableRow(acc) {
@@ -214,13 +214,47 @@
 	}
 
 	// Define event handling function for selecting an account; fills in the account details
-	function selectAccount(idx) {
-		$('#AuthIdv4').prop('value', accountsArray[idx].number);
-		$('#AuthBpasNrv4').prop('value', accountsArray[idx].cardNumber);
+	function selectAccount(idx, override) {
+		// Figure out the currently selected values (removing
+		// the spaces in the account number added for
+		// readability).
+		var number = $('#AuthIdv4').prop('value').replace(/ /g, "");
+		var card = $('#AuthBpasNrv4').prop('value')
+
+		if (number && card && !override) {
+			// On page load, we shouldn't override any
+			// current values if they are there, since when
+			// using the Rabo Scanner, selecting an account
+			// causes a page reload, after which we run
+			// again. If we'd override the account number
+			// then, we'd select the default account
+			// after the user selected a different one
+			//
+			// Instead, find out which account was selected.
+			idx = null;
+			for (var i = 0; i < accountsArray.length; ++i) {
+				if (accountsArray[i].number == number && accountsArray[i].cardNumber == card) {
+					idx = i;
+					break;
+				}
+			}
+		} else {
+			$('#AuthIdv4').prop('value', accountsArray[idx].number);
+			$('#AuthBpasNrv4').prop('value', accountsArray[idx].cardNumber);
+
+			// For the Rabo Scanner, the account and card
+			// number need to be submitted, so the server
+			// can generate a new challenge
+			if ($('#challenge_container').length)
+				$('#loginform').submit();
+		}
+
 		// Login pages have AuthCdv4, sign pages have SignCdv4.
 		// Focuse whatever one is available.
 		$('#AuthCdv4, #SignCdv4').focus();
-		$('#accounts input[type="radio"]')[idx].checked = true;
+
+		if (idx !== null)
+			$('#accounts input[type="radio"]')[idx].checked = true;
 	}
 
 	// Define event handling function for deleting an account/row in the accounts table when editing accounts
@@ -252,7 +286,7 @@
 		// Format caption like '1. Account description (12345689 : 1234)'
 		var caption = (idx + 1) + '. ' + accountsArray[idx].description + '  (' + numberFormat(accountsArray[idx].number) + ' : ' + accountsArray[idx].cardNumber + ')';
 		// Have to wrap the select account function in an anonymous function to create a closure with the index parameter bound
-		var handler = function () { selectAccount(idx); };
+		var handler = function () { selectAccount(idx, true); };
 		GM_registerMenuCommand(caption, handler);
 	}
 
@@ -299,7 +333,7 @@
 		// This basically just fires the event listener function without setting the it's this.id attribute.
 		if (autoFillDefault) {
 			// We have to wait a little while to avoid conflict with Rabobank's native JavaScript ran on DOM-ready
-			window.setTimeout(function() { selectAccount(defaultAccount); }, autoFillDelay);
+			window.setTimeout(function() { selectAccount(defaultAccount, false); }, autoFillDelay);
 		}
 	}
 	/**
