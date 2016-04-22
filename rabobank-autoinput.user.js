@@ -61,30 +61,17 @@
 	var stylesheet =
 	'div#account_selection {'+
 	'    margin-bottom: 20px;'+
-	'    margin-left: 196px;'+
-	'    margin-right: 196px;'+
-	'    width: 528px;'+
 	'}'+
 	'div#account_selection table#accounts {'+
 	'    background: none repeat scroll 0 0 White;'+
-	'    border: 1px solid #CCCCCC;'+
-	'    margin: 10px;'+
 	'    padding: 5px;'+
 	'    width: 96%;'+
 	'}'+
 	'table#accounts th {'+
 	'    text-align: left;'+
 	'}'+
-	'table#accounts td.account_name label {'+
-	'    display: inline-block;'+
-	'    max-width: 200px;'+
-	'    overflow: hidden;'+
-	'    text-overflow: ellipsis;'+
-	'    vertical-align: middle;'+
-	'    white-space: nowrap;'+
-	'    word-wrap: normal;'+
-	'}'+
-	'table#accounts td.account_name label {'+
+	'table#accounts td:first-child {'+
+	'    padding-left: 16px;'+
 	'}'+
 	'a.edit {'+
 	'    background: no-repeat scroll 0 0 transparent;'+
@@ -125,9 +112,9 @@
 	// Static table header
 	'      <thead>'+
 	'        <tr>'+
-	'          <th>Selecteer uw Rabobank rekening</th>'+
-	'          <th>Rekening nummer</th>'+
-	'          <th>Kaart nummer</th>'+
+	'          <th><h2>Selecteer uw Rabobank rekening</h2></th>'+
+	'          <th><h2>Rekeningnummer</h2></th>'+
+	'          <th><h2>Kaartnummer</h2></th>'+
 	'        </tr>'+
 	'      </thead>'+
 	'      <tbody></tbody>'+
@@ -218,8 +205,8 @@
 		// Figure out the currently selected values (removing
 		// the spaces in the account number added for
 		// readability).
-		var number = $('#AuthIdv4').prop('value').replace(/ /g, "");
-		var card = $('#AuthBpasNrv4').prop('value')
+		var number = $('#rass-data-reknr').prop('value').replace(/ /g, "");
+		var card = $('#rass-data-pasnr').prop('value')
 
 		if (number && card && !override) {
 			// On page load, we shouldn't override any
@@ -239,19 +226,18 @@
 				}
 			}
 		} else {
-			$('#AuthIdv4').prop('value', accountsArray[idx].number);
-			$('#AuthBpasNrv4').prop('value', accountsArray[idx].cardNumber);
+			$('#rass-data-reknr').prop('value', accountsArray[idx].number);
+			$('#rass-data-pasnr').prop('value', accountsArray[idx].cardNumber);
 
 			// For the Rabo Scanner, the account and card
 			// number need to be submitted, so the server
 			// can generate a new challenge
-			if ($('#challenge_container').length)
-				$('#loginform').submit();
+			$('#loginform').submit();
 		}
 
 		// Login pages have AuthCdv4, sign pages have SignCdv4.
 		// Focuse whatever one is available.
-		$('#AuthCdv4, #SignCdv4').focus();
+		$('#rass-data-inlogcode').focus();
 
 		if (idx !== null)
 			$('#accounts input[type="radio"]')[idx].checked = true;
@@ -311,9 +297,7 @@
 		GM_addStyle(stylesheet);
 
 		// Insert and fill the custom account selection panel
-		var elem = $('#icodeform').parent(); // Ideal payment page and Rabo Scanner login
-		if (elem.length == 0)
-			elem = $('#loginform').parent(); // Random reader login
+		var elem = $('#loginform');
 
 		elem.before(selectionPanel);
 		initAccountsPanel(editing);
@@ -326,7 +310,7 @@
 
 		// Want me to remove that puny original Rabobank 'remember my card' checkbox? It's bugged, and I just made it obsolete... Yeah, that's what I though :)
 		if (removeOriginalRemember) {
-			$('input[type="checkbox"]#brtcheck01').parent().hide();
+			$('#rass-data-onthouden').parent().hide();
 		}
 
 		// And for good measure, we may select the default/primary straight away.
@@ -341,9 +325,9 @@
 	/* if we're on a Rabobank page where we have the kind of form we can input something usefull into.
 	 */
 	if(
-		$('#brt_form, #loginform, #icodeform').length != 0 &&
-		$('#AuthIdv4').length != 0 &&
-		$('#AuthBpasNrv4').length != 0
+		$('#loginform').length != 0 &&
+		$('#rass-data-reknr').length != 0 &&
+		$('#rass-data-pasnr').length != 0
 	) {
 		initialize();
 	}
