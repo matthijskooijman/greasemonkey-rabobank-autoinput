@@ -2,8 +2,7 @@
 // @name                Rabobank Internetbankieren auto-input
 // @namespace           FelixAkk
 // @description         Quickly select from multiple bank acccounts in the Rabobank login and payment pages
-// @include             https://bankieren.rabobank.nl/klanten*
-// @include             https://bankieren.rabobank.nl/rib/*
+// @include             https://bankieren.rabobank.nl/omgevingskeuze/registratie
 // @include             https://betalen.rabobank.nl/ide/qslo*
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
 // @grant               GM_setValue
