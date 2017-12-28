@@ -10,7 +10,7 @@
 // @grant               GM_listValues
 // @grant               GM_deleteValue
 // @grant               GM_addStyle
-// @require             http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js
+// @require             http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @copyright           2014, Felix Akkermans
 // @copyright           2014, Matthijs Kooijman (matthijs@stdin.nl)
 // @license             The MIT license; http://opensource.org/licenses/MIT
