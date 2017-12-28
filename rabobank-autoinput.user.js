@@ -10,7 +10,6 @@
 // @grant               GM_listValues
 // @grant               GM_deleteValue
 // @grant               GM_addStyle
-// @grant               GM_registerMenuCommand
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js
 // @copyright           2014, Felix Akkermans
 // @copyright           2014, Matthijs Kooijman (matthijs@stdin.nl)
@@ -49,8 +48,6 @@
 		// Time in miliseconds to wait for Rabobank's native JavaScript that's ran on DOM-ready to finish.
 		// Increase this if you see your account selected but not filled in.
 		autoFillDelay = 1000,
-		// Optionally you can also choose your account through the GreaseMonkey command menu (off by default)
-		GMMenu = false,
 		// Want me to remove that puny original Rabobank 'remember my card' checkbox?
 		// It's bugged, and I just made it obsolete... Yeah, that's what I though :)
 		removeOriginalRemember = true;
@@ -265,16 +262,6 @@
 		setEditMode(false);
 	}
 
-	// Function to add an menu item to the GreaseMonkey command item to select your account.
-	// This function is necessary to get 'idx' to be a seperate variable at runtime instead of the end value of the 'idx' variable of the insertPanel function.
-	function addGMMenuItem(idx) {
-		// Format caption like '1. Account description (12345689 : 1234)'
-		var caption = (idx + 1) + '. ' + accountsArray[idx].description + '  (' + numberFormat(accountsArray[idx].number) + ' : ' + accountsArray[idx].cardNumber + ')';
-		// Have to wrap the select account function in an anonymous function to create a closure with the index parameter bound
-		var handler = function () { selectAccount(idx, true); };
-		GM_registerMenuCommand(caption, handler);
-	}
-
 	function setEditMode(value) {
 		// Update edit/save links
 		$("a.edit.enter", selectionPanel).toggle(!value);
@@ -300,12 +287,6 @@
 
 		elem.before(selectionPanel);
 		initAccountsPanel(editing);
-
-		if (GMMenu) {
-			for (var idx = 0; idx < accountsArray.length; idx++) {
-				addGMMenuItem(idx);
-			}
-		}
 
 		// Want me to remove that puny original Rabobank 'remember my card' checkbox? It's bugged, and I just made it obsolete... Yeah, that's what I though :)
 		if (removeOriginalRemember) {
