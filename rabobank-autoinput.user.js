@@ -5,11 +5,8 @@
 // @include             https://bankieren.rabobank.nl/omgevingskeuze/registratie
 // @include             https://betalen.rabobank.nl/ide/qslo*
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
-// @grant               GM_setValue
-// @grant               GM_getValue
-// @grant               GM_listValues
-// @grant               GM_deleteValue
-// @grant               GM_addStyle
+// @grant               GM.setValue
+// @grant               GM.getValue
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
 // @copyright           2014, Felix Akkermans
 // @copyright           2014, Matthijs Kooijman (matthijs@stdin.nl)
@@ -33,10 +30,10 @@
 /**
  * The global annotation is also for JSLint, which will tell it not to whine about the declaration
  */
-/*global GM_setValue, GM_getValue, GM_listValues, GM_deleteValue, window, document */
+/*global GM */
 
 // http://stackoverflow.com/questions/1335851/what-does-use-strict-do-in-javascript-and-what-is-the-reasoning-behind-it
-(function () {
+(async function () {
 	"use strict";
 	// --------------- General settings -------------------
 	// tweak it to your own likings (script may malfunction on bad values)
@@ -139,7 +136,7 @@
 	];
 
 	// Prefetch storage
-	var accountsJSON = GM_getValue('accountsJSON');
+	var accountsJSON = await GM.getValue('accountsJSON');
 	// Actual accounts
 	var accountsArray;
 	// If we have no values stored yet (first run), initialize the storage with example values
@@ -258,7 +255,7 @@
 			accountsArray.push(accountFromRow(row));
 		});
 		// Save it all
-		GM_setValue('accountsJSON', JSON.stringify(accountsArray));
+		GM.setValue('accountsJSON', JSON.stringify(accountsArray));
 		setEditMode(false);
 	}
 
@@ -280,7 +277,7 @@
 
 	function initialize() {
 		// Load the defined custom styles
-		GM_addStyle(stylesheet);
+		$("<style/>").text(stylesheet).appendTo(document.head);
 
 		// Insert and fill the custom account selection panel
 		var elem = $('#loginform');
