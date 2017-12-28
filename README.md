@@ -19,3 +19,8 @@ were made by Matthijs Kooijman, who now also maintains the script.
 
 This script is licensed under the open MIT license, see the `LICENSE`
 file for the full license text.
+
+This code contains icons (encoded as base64 urls) from the "Silk" icon
+set v1.3, authored by Mark James as published on
+http://www.famfamfam.com/lab/icons/silk/. These icons are licensed under
+the Creative Commons Attribution 3.0 license.
