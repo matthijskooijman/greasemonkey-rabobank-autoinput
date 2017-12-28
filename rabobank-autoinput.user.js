@@ -276,8 +276,12 @@
 	}
 
 	function initialize() {
+		// On form submission, this script sometimes seems to run twice?
+		if ($('#rabobank-autoinput-style').length > 0)
+			return;
+
 		// Load the defined custom styles
-		$("<style/>").text(stylesheet).appendTo(document.head);
+		$("<style id=\"rabobank-autoinput-style\"/>").text(stylesheet).appendTo(document.head);
 
 		// Insert and fill the custom account selection panel
 		var elem = $('#loginform');
