@@ -1,3 +1,7 @@
+Version 2.1.5 (2018-05-01)
+ - Fix new installations of the script (broken since 2.1.3)
+ - Fix the add and delete icons (broken since 2.1.3)
+
 Version 2.1.4 (2018-05-01)
  - Update login url.
 
