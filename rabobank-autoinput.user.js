@@ -160,7 +160,7 @@
 	var accountsArray;
 	// If we have no values stored yet (first run), initialize the storage with example values
 	if (accountsJSON === undefined) {
-		GM_setValue('accountsJSON', JSON.stringify(examples));
+		GMsetValue('accountsJSON', JSON.stringify(examples));
 		accountsArray = examples;
 	} else {
 		// Else load the bank accounts
