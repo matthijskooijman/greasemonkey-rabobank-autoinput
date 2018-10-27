@@ -1,3 +1,7 @@
+Version 2.1.6 (2019-05-28)
+ - Really fix new installations of the script (broken since 2.1.3, the
+   fix in 2.1.5 did not actually work...).
+
 Version 2.1.5 (2018-05-01)
  - Fix new installations of the script (broken since 2.1.3)
  - Fix the add and delete icons (broken since 2.1.3)
