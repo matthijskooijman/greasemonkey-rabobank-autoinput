@@ -5,6 +5,7 @@
 // @include             https://bankieren.rabobank.nl/omgevingskeuze/*
 // @include             https://betalen.rabobank.nl/ide/qslo*
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
+// @include             https://betalen.rabobank.nl/activerencreditcard
 // @grant               GM.setValue
 // @grant               GM.getValue
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
