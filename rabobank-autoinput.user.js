@@ -57,20 +57,11 @@
 	'    margin-bottom: 20px;'+
 	'}'+
 	'div#account_selection table#accounts {'+
-	'    background: none repeat scroll 0 0 White;'+
-	'    padding: 5px;'+
 	'    width: 96%;'+
+	'    margin: 10px;'+
 	'}'+
-	// .rass_content-section limits to just the sign page
-	'.rass_content-section div#account_selection {'+
-	'    width: 528px;'+
-	'    margin-left: 196px;'+
-	'    margin-right: 196px;'+
-	'}'+
-	''+
-	'.rass_content-section div#account_selection table#accounts {'+
+	'div#account_selection {'+
 	'    border: 1px solid #CCCCCC;'+
-	'    width: 100%;'+
 	'}'+
 	'table#accounts th {'+
 	'    text-align: left;'+
@@ -118,16 +109,16 @@
 
 	// Construct selection panel DOM
 	var selectionPanel =
-	// I'll employ the styles of the Rabobank CSS classes .imgstripe, .newpanel to make it look identical.
-	'<div id="account_selection" class="imgstripe newpanel">'+
+	// I'll employ the styles of the Rabobank CSS class rass-data-target
+	'<div id="account_selection" class="rass-data-target">'+
 	'  <form>'+
 	'    <table id="accounts">'+
 	// Static table header
 	'      <thead>'+
 	'        <tr>'+
-	'          <th><h2>Selecteer uw Rabobank rekening</h2></th>'+
-	'          <th><h2>Rekeningnummer</h2></th>'+
-	'          <th><h2>Kaartnummer</h2></th>'+
+	'          <th>Selecteer uw Rabobank rekening</th>'+
+	'          <th>Rekeningnummer</th>'+
+	'          <th>Kaartnummer</th>'+
 	'        </tr>'+
 	'      </thead>'+
 	'      <tbody></tbody>'+
