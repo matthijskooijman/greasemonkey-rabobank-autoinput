@@ -1,3 +1,8 @@
+Version 2.2.0 (2020-02-28)
+ - Support the new sign page (for ideal payments) that is used for some
+   months now.
+ - Significant internal refactoring of the code.
+
 Version 2.1.6 (2019-05-28)
  - Really fix new installations of the script (broken since 2.1.3, the
    fix in 2.1.5 did not actually work...).
