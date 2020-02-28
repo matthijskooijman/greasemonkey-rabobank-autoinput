@@ -9,8 +9,8 @@
 // @grant               GM.setValue
 // @grant               GM.getValue
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
+// @copyright           2014-2020, Matthijs Kooijman (matthijs@stdin.nl)
 // @copyright           2014, Felix Akkermans
-// @copyright           2014, Matthijs Kooijman (matthijs@stdin.nl)
 // @license             The MIT license; http://opensource.org/licenses/MIT
 // @homepageURL         https://github.com/matthijskooijman/greasemonkey-rabobank-autoinput
 // @version             2.1.6
