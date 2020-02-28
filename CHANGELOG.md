@@ -1,3 +1,6 @@
+Version 2.2.2 (2020-11-05)
+ - Adapt to changes in the ideal page.
+
 Version 2.2.1 (2020-09-21)
  - Support the credit card activation login page.
 
