@@ -1,3 +1,6 @@
+Version 2.2.1 (2020-09-21)
+ - Support the credit card activation login page.
+
 Version 2.2.0 (2020-02-28)
  - Support the new sign page (for ideal payments) that is used for some
    months now.
