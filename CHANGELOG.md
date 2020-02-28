@@ -1,3 +1,6 @@
+Version 2.2.3 (2021-09-17)
+ - Adapt to changes in the login page.
+
 Version 2.2.2 (2020-11-05)
  - Adapt to changes in the ideal page.
 
