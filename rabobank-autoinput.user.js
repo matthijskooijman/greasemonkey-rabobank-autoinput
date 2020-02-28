@@ -41,14 +41,9 @@
 
     // Want me to fill in your default/primary account automatically as a page loads?
     var autoFillDefault = true,
-        // Change to the account you want to select from the accountsArray (start counting from zero).
-        defaultAccount = 0,
         // Time in miliseconds to wait for Rabobank's native JavaScript that's ran on DOM-ready to finish.
         // Increase this if you see your account selected but not filled in.
-        autoFillDelay = 1000,
-        // Want me to remove that puny original Rabobank 'remember my card' checkbox?
-        // It's bugged, and I just made it obsolete... Yeah, that's what I though :)
-        removeOriginalRemember = true;
+        autoFillDelay = 1000;
 
     // ---------------- CSS/Stylesheet --------------------
 
@@ -68,6 +63,14 @@
     '}'+
     'table#accounts td:first-child {'+
     '    padding-left: 16px;'+
+    '}'+
+    // Reset some invasive CSS on input and label
+    'table#accounts input {'+
+    '    width: auto;'+
+    '    height: auto;'+
+    '}'+
+    'table#accounts label {'+
+    '    display: inline;'+
     '}'+
     'a.edit {'+
     '    background: no-repeat scroll 0 0 transparent;'+
@@ -110,7 +113,7 @@
     // Construct selection panel DOM
     var selectionPanel =
     // I'll employ the styles of the Rabobank CSS class rass-data-target
-    '<div id="account_selection" class="rass-data-target">'+
+    '<div id="account_selection">'+
     '  <form>'+
     '    <table id="accounts">'+
     // Static table header
@@ -158,6 +161,9 @@
         // Else load the bank accounts
         accountsArray = JSON.parse(accountsJSON);
     }
+
+    // Elements from the original page to be modified
+    var container, reknr_field, pasnr_field, code_field, remember_field;
 
     // Utility function that takes a bank account number and returns it seperated by points like on the Rabobank cards
     function numberFormat(account) {
@@ -209,8 +215,8 @@
         // Figure out the currently selected values (removing
         // the spaces in the account number added for
         // readability).
-        var number = $('#rass-data-reknr, #AuthIdv4').prop('value').replace(/ /g, "");
-        var card = $('#rass-data-pasnr, #AuthBpasNrv4').prop('value')
+        var number = reknr_field.prop('value').replace(/ /g, "");
+        var card = pasnr_field.prop('value')
 
         if (number && card && !override) {
             // On page load, we shouldn't override any
@@ -230,23 +236,23 @@
                 }
             }
         } else {
-            // Login pages have rass-data-*, sign pages have Auth*
-            $('#rass-data-reknr, #AuthIdv4').prop('value', accountsArray[idx].number);
-            $('#rass-data-pasnr, #AuthBpasNrv4').prop('value', accountsArray[idx].cardNumber);
-
-            // For the Rabo Scanner, the account and card
-            // number need to be submitted, so the server
-            // can generate a new challenge. This is only relevant for the login page, since the sign page still uses a two-step procedure.
-            if ($('#loginform').length)
-                $('#loginform').submit();
+            // Assign selected values
+            reknr_field.prop('value', accountsArray[idx].number);
+            pasnr_field.prop('value', accountsArray[idx].cardNumber);
+            // Then, trigger input events. On the Rabo sign page, this is needed to update internally
+            // stored values and on the Rabo sign and login pages, this also causes the default
+            // scripts to actually request a challenge to scan.
+            // We cannot use .tigger("input") here, for some reason that does not trigger the onInput
+            // handler in the Rabo sign page.
+            reknr_field[0].dispatchEvent(new Event("input"));
+            pasnr_field[0].dispatchEvent(new Event("input"));
         }
 
-        // Login pages have rass-data-inlogcode, sign pages have SignCdv4.
-        // Focuse whatever one is available.
-        $('#rass-data-inlogcode, #SignCdv5').focus();
+        // Focus code field, since that is the next thing to enter
+        code_field.focus();
 
         if (idx !== null)
-            $('#accounts input[type="radio"]')[idx].checked = true;
+            $('#accounts input[type="radio"]', selectionPanel)[idx].checked = true;
     }
 
     // Define event handling function for deleting an account/row in the accounts table when editing accounts
@@ -257,14 +263,14 @@
     // Define event handling function for inserting an account/row in the accounts table after a given index (when editing accounts)
     function addAccount(accountIdx) {
         var row = constructEditableRow(new Account());
-        row.insertBefore($('#accounts tbody tr').last());
+        row.insertBefore($('#accounts tbody tr', selectionPanel).last());
     }
 
     // Event handler for the save changes button
     function saveChanges() {
         accountsArray = []; // new array, clean slate
         // Fill array
-        $('#accounts tbody tr').slice(0, -1).each(function(idx, row) {
+        $('#accounts tbody tr', selectionPanel).slice(0, -1).each(function(idx, row) {
             accountsArray.push(accountFromRow(row));
         });
         // Save it all
@@ -290,52 +296,85 @@
 
     function initialize() {
         // On form submission, this script sometimes seems to run twice?
-        if ($('#rabobank-autoinput-style').length > 0)
+        if ($('#rabobank-autoinput-style', container).length > 0)
             return;
 
         // Load the defined custom styles
-        $("<style id=\"rabobank-autoinput-style\"/>").text(stylesheet).appendTo(document.head);
+        $("<style id=\"rabobank-autoinput-style\"/>").text(stylesheet).appendTo(container);
 
         // Insert and fill the custom account selection panel
-        var elem = $('#icodeform').parent(); // Sign page
-        if (elem.length == 0)
-            elem = $('#loginform'); // Login page
+        container.prepend(selectionPanel);
+        initAccountsPanel();
 
-        elem.before(selectionPanel);
-        initAccountsPanel(editing);
-
-        // Want me to remove that puny original Rabobank 'remember my card' checkbox? It's bugged, and I just made it obsolete... Yeah, that's what I though :)
-        if (removeOriginalRemember) {
-            // Login page
-            $('#rass-data-onthouden').parent().hide();
-            // Sign page
-            $('input[type="checkbox"]#brtcheck01').parent().hide();
+        // Remove the (now pointless) remember me checkbox
+        if (remember_field) {
+            remember_field.hide();
         }
 
         // And for good measure, we may select the default/primary straight away.
-        // This basically just fires the event listener function without setting the it's this.id attribute.
         if (autoFillDefault) {
             // We have to wait a little while to avoid conflict with Rabobank's native JavaScript ran on DOM-ready
-            window.setTimeout(function() { selectAccount(defaultAccount, false); }, autoFillDelay);
+            window.setTimeout(function() { selectAccount(0, false); }, autoFillDelay);
         }
     }
-    /**
-    /* Run only when script is of use, i.e.;
-    /* if we're on a Rabobank page where we have the kind of form we can input something usefull into.
-     */
-    if(
-        // Login page
-        $('#loginform').length != 0 &&
-        $('#rass-data-reknr').length != 0 &&
-        $('#rass-data-pasnr').length != 0
-        ||
-        // Sign page
-        $('#icodeform').length != 0 &&
-        $('#AuthIdv4').length != 0 &&
-        $('#AuthBpasNrv4').length != 0
-    ) {
-        initialize();
-    }
 
+    function maybe_initialize(retries) {
+        // Rabo login page
+        if ($('#loginform').length != 0) {
+            var form = $('#loginform');
+            reknr_field = $('#rass-data-reknr', form);
+            pasnr_field = $('#rass-data-pasnr', form);
+            code_field = $('#rass-data-inlogcode', form);
+            remember_field = $('#rass-data-onthouden').parent();
+            if (reknr_field.length && pasnr_field.length) {
+                // To nicely layout, we duplicate a bit of the existing structure to append our interface to.
+                // We cannot use the existing section-sum, since its contents might still be replaced
+                // asynchronously later.
+                container = $('<div class="rass-data-target"/>').prependTo(form);
+                initialize();
+                return;
+            }
+        }
+
+        // The new Rabo sign page loads with just a rass-sign-component and then initializes
+        // the rest using javascript into a "shadow root" that needs to be explicitly addressed
+        // for jquery selectors to see it. So handle that specially.
+        if ($('rass-sign-component').length != 0) {
+            var root = $('rass-sign-component')[0].shadowRoot;
+            var placeholder = $('.component-placeholder', root);
+            reknr_field = $('#rass-data-reknr', root);
+            pasnr_field = $('#rass-data-pasnr', root);
+            code_field = $('#sign_code', root);
+            if (placeholder.length && reknr_field.length && pasnr_field.length) {
+                // To nicely layout, we duplicate a bit of the existing structure to append our interface to.
+                // We cannot use the existing section-sum, since its contents might still be replaced
+                // asynchronously later.
+                container = $('<div class="section-sum-content"/>').appendTo($('<div class="section-sum"/>').prependTo(placeholder));
+                initialize();
+                return;
+            }
+        }
+
+        // Old rabo sign page. No longer used for ideal payments, but maybe still in use somewhere
+        // Untested since big rewrite of this script.
+        if ($('#icodeform').length != 0) {
+            container = $('#icodeform');
+            reknr_field = $('#AuthIdv4', container);
+            pasnr_field = $('#AuthBpasNrv4', container);
+            code_field = $('#SignCdv5', container);
+            if (reknr_field.length && pasnr_field.length) {
+                initialize();
+                return;
+            }
+        }
+
+        // In case stuff is loaded dynamically, retry after a short while.
+        if (retries > 0) {
+            setTimeout(function() { maybe_initialize(retries - 1); }, 500);
+        } else {
+            console.log("Rabobank Internetbankieren auto-input: No login or sign page found");
+        }
+    }
+    maybe_initialize(10 /* retries */);
 }());
 
