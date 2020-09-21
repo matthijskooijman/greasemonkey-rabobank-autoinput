@@ -3,6 +3,7 @@
 // @namespace           FelixAkk
 // @description         Quickly select from multiple bank acccounts in the Rabobank login and payment pages
 // @include             https://bankieren.rabobank.nl/omgevingskeuze/*
+// @include             https://bankieren.rabobank.nl/online/*/qsl_debitcardlogon.do
 // @include             https://betalen.rabobank.nl/ide/qslo*
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
 // @include             https://betalen.rabobank.nl/activerencreditcard
