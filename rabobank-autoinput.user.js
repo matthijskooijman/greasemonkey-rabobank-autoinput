@@ -337,11 +337,13 @@
             }
         }
 
-        // The new Rabo sign page loads with just a rass-sign-component and then initializes
-        // the rest using javascript into a "shadow root" that needs to be explicitly addressed
-        // for jquery selectors to see it. So handle that specially.
-        if ($('rass-sign-component').length != 0) {
-            var root = $('rass-sign-component')[0].shadowRoot;
+        // The new Rabo sign page loads with just a rass-sign (older
+        // versions with rass-sign-component) and then initializes the
+        // rest using javascript into a "shadow root" that needs to be
+        // explicitly addressed for jquery selectors to see it. So
+        // handle that specially.
+        if ($('rass-sign, rass-sign-component').length != 0) {
+            var root = $('rass-sign, rass-sign-component')[0].shadowRoot;
             var placeholder = $('.component-placeholder', root);
             reknr_field = $('#rass-data-reknr', root);
             pasnr_field = $('#rass-data-pasnr', root);
