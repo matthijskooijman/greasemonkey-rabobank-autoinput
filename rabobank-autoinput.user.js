@@ -344,7 +344,7 @@
         // handle that specially.
         if ($('rass-sign, rass-sign-component').length != 0) {
             var root = $('rass-sign, rass-sign-component')[0].shadowRoot;
-            var placeholder = $('.component-placeholder', root);
+            var placeholder = $('.component-placeholder, .rfs2-container', root);
             reknr_field = $('#rass-data-reknr', root);
             pasnr_field = $('#rass-data-pasnr', root);
             code_field = $('#sign_code', root);
