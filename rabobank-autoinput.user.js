@@ -320,7 +320,7 @@
     }
 
     function maybe_initialize(retries) {
-        // Rabo login page
+        // Old Rabo login page
         if ($('#loginform').length != 0) {
             var form = $('#loginform');
             reknr_field = $('#rass-data-reknr', form);
@@ -337,11 +337,11 @@
             }
         }
 
-        // The new Rabo sign page loads with just a rass-sign (older
-        // versions with rass-sign-component) and then initializes the
-        // rest using javascript into a "shadow root" that needs to be
-        // explicitly addressed for jquery selectors to see it. So
-        // handle that specially.
+        // The new Rabo sign and login page loads with just a rass-sign
+        // (older versions with rass-sign-component) and then
+        // initializes the rest using javascript into a "shadow root"
+        // that needs to be explicitly addressed for jquery selectors to
+        // see it. So handle that specially.
         if ($('rass-sign, rass-sign-component').length != 0) {
             var root = $('rass-sign, rass-sign-component')[0].shadowRoot;
             var placeholder = $('.component-placeholder, .rfs2-container', root);
