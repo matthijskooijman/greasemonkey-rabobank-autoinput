@@ -380,4 +380,3 @@
     }
     maybe_initialize(10 /* retries */);
 }());
-
