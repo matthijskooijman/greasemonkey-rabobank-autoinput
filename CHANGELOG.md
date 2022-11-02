@@ -1,3 +1,6 @@
+Version 2.2.6 (2023-02-09)
+ - Add new ideal page url.
+
 Version 2.2.5 (2022-11-02)
  - Add new login page url.
 
