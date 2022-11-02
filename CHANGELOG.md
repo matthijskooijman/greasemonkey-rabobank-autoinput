@@ -1,3 +1,6 @@
+Version 2.2.5 (2022-11-02)
+ - Add new login page url.
+
 Version 2.2.4 (2021-11-10)
  - Adapt to changes in the login page.
 
