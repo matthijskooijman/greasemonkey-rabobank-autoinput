@@ -7,6 +7,7 @@
 // @include             https://bankieren.rabobank.nl/online/*/qsl_debitcardlogon.do
 // @include             https://betalen.rabobank.nl/ide/qslo*
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
+// @include             https://betalen.rabobank.nl/ideal/*
 // @include             https://betalen.rabobank.nl/activerencreditcard
 // @grant               GM.setValue
 // @grant               GM.getValue
