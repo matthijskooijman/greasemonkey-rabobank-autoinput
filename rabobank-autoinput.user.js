@@ -9,6 +9,7 @@
 // @include             https://betalen.rabobank.nl/ideal-betaling/*
 // @include             https://betalen.rabobank.nl/ideal/*
 // @include             https://betalen.rabobank.nl/activerencreditcard
+// @include             https://idp.rabobank.nl/idp/idin/*
 // @grant               GM.setValue
 // @grant               GM.getValue
 // @require             http://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js
