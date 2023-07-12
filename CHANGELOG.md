@@ -1,3 +1,6 @@
+Version 2.2.7 (2023-07-12)
+ - Add IDIN signature page url.
+
 Version 2.2.6 (2023-02-09)
  - Add new ideal page url.
 
